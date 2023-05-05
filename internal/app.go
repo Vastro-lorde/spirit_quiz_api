@@ -6,11 +6,9 @@ import (
 	"net/http"
 	"spirit_quiz/config"
 	"spirit_quiz/internal/data/database"
-	"spirit_quiz/internal/handlers"
 
 	"github.com/gin-gonic/gin"
 )
-
 
 func StartServer() {
 	config, err := config.GetConfigs()
@@ -50,10 +48,6 @@ func StartServer() {
 	{
 		SetupAuthRoutes(quizRoutes)
 	}
-
-	
-
-	
 
 	port := config.PORT
 	if port == "" {
