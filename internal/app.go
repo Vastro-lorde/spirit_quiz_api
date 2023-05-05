@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
 func StartServer() {
 	config, err := config.GetConfigs()
 	if err != nil {
@@ -40,11 +41,19 @@ func StartServer() {
 		ctx.IndentedJSON(http.StatusOK, "welcome to quiz api")
 	})
 
-	router.POST("/create/category", handlers.CreateCategory)
-	router.POST("/create/question", handlers.CreateQuestion)
+	authRoutes := router.Group("/auth")
+	{
+		SetupAuthRoutes(authRoutes)
+	}
 
-	router.GET("/get/categories", handlers.GetCategories)
-	router.GET("/get/questions/:id", handlers.GetQuestionsByCategoryId)
+	quizRoutes := router.Group("/auth")
+	{
+		SetupAuthRoutes(quizRoutes)
+	}
+
+	
+
+	
 
 	port := config.PORT
 	if port == "" {
