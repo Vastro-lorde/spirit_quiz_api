@@ -107,7 +107,7 @@ func SendSuccessEmailVerification(recipientEmail string) error {
 	email := gomail.NewMessage()
 	email.SetHeader("From", configs.GomailEmail, appName)
 	email.SetHeader("To", recipientEmail)
-	email.SetHeader("Subject", appName+" Password Reset Successful")
+	email.SetHeader("Subject", appName+" Email Verification Successful")
 	email.SetBody("text/html", message)
 
 	// Send email

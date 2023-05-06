@@ -112,14 +112,18 @@ func Login(context *gin.Context) {
 }
 
 func RequestResetPassword(context *gin.Context) {
-	var email string
+
+	type EmailDto struct {
+		Email string `json:"email" binding:"required"`
+	}
+	var email EmailDto
 	if err := context.ShouldBindJSON(&email); err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	var user models.User
-	if err := db.Where("email = ?", email).First(&user).Error; err != nil {
+	if err := db.Where("email = ?", email.Email).First(&user).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
@@ -148,7 +152,7 @@ func RequestResetPassword(context *gin.Context) {
 	}
 
 	// Return the updated user object
-	context.AbortWithStatusJSON(http.StatusOK, gin.H{"success": "an email has been sent to " + email})
+	context.AbortWithStatusJSON(http.StatusOK, gin.H{"success": "an email has been sent to " + email.Email})
 }
 
 func ResetPassword(context *gin.Context) {
@@ -176,9 +180,15 @@ func ResetPassword(context *gin.Context) {
 		return
 	}
 
-	// Update the user with the generated OTP
+	hashedPassword, err := services.HashPassword(resetPasswordDto.Password)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		context.Abort()
+		return
+	}
+
 	user.Otp = ""
-	user.Password = resetPasswordDto.Password
+	user.Password = hashedPassword
 
 	if err := db.Save(&user).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -187,7 +197,10 @@ func ResetPassword(context *gin.Context) {
 
 	user.Password = ""
 	// Return the updated user object
-	context.AbortWithStatusJSON(http.StatusOK, gin.H{"user": user})
+	context.AbortWithStatusJSON(http.StatusOK, gin.H{
+		"success": "password has been reset",
+		"user":    user,
+	})
 }
 
 func VerifyEmail(context *gin.Context) {
