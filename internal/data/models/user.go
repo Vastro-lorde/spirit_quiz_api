@@ -20,6 +20,7 @@ type User struct {
 	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
 	Name      string    `gorm:"not null"`
 	Email     string    `gorm:"not null;uniqueIndex"`
+	Verified  bool      `gorm:"not null;default:false"`
 	Password  string    `gorm:"not null"`
 	Otp       string    `gorm:"not null;default:''"`
 	Role      Role      `gorm:"not null;default:CLIENT"`

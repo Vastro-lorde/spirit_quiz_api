@@ -40,14 +40,10 @@ func StartServer() {
 	})
 
 	authRoutes := router.Group("/auth")
-	{
-		SetupAuthRoutes(authRoutes)
-	}
+	SetupAuthRoutes(authRoutes)
 
-	quizRoutes := router.Group("/auth")
-	{
-		SetupAuthRoutes(quizRoutes)
-	}
+	quizRoutes := router.Group("/quiz")
+	SetupQuizRoutes(quizRoutes)
 
 	port := config.PORT
 	if port == "" {
