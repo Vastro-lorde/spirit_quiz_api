@@ -2,6 +2,7 @@ package internal
 
 import (
 	"spirit_quiz/internal/handlers"
+	"spirit_quiz/internal/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,21 +17,39 @@ func SetupAuthRoutes(router *gin.RouterGroup) {
 }
 
 func SetupQuizRoutes(router *gin.RouterGroup) {
+	// Apply the Auth middleware to all routes in the router group
+	router.Use(middlewares.Auth())
 
 	//create routes
-	createRoutes := router.Group("/create")
+	creationRoutes := router.Group("/create")
 	{
-		createRoutes.POST("/category", handlers.CreateCategory)
-		createRoutes.POST("/question", handlers.CreateQuestion)
-		createRoutes.POST("/option", handlers.CreateOption)
+		creationRoutes.Use(middlewares.RoleAuth("ADMIN"))
+		creationRoutes.POST("/category", handlers.CreateCategory)
+		creationRoutes.POST("/question", handlers.CreateQuestion)
+		creationRoutes.POST("/option", handlers.CreateOption)
 	}
 
-	router.GET("categories", handlers.GetCategories)
+	categoryRoutes := router.Group("/categories")
+	{
+		categoryRoutes.GET("/", handlers.GetCategories)
+		categoryRoutes.PATCH("/:id", middlewares.RoleAuth("ADMIN"), handlers.UpdateCategoryById)
+		categoryRoutes.DELETE("/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteCategoryById)
+	}
 
-	router.GET("/questions", handlers.GetQuestions)
-	router.GET("/questions/:id", handlers.GetQuestionsByCategoryId)
+	questionRoutes := router.Group("/questions")
+	{
+		questionRoutes.GET("/", handlers.GetQuestions)
+		questionRoutes.GET("/:id", handlers.GetQuestionsByCategoryId)
+		questionRoutes.PATCH("/:id", middlewares.RoleAuth("ADMIN"), handlers.UpdateQuestionById)
+		questionRoutes.DELETE("/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteQuestionById)
+	}
 
-	router.GET("/options", handlers.GetOptions)
-	router.GET("/options/:id", handlers.GetOptionsByQuestionId)
+	optionRoutes := router.Group("/options")
+	{
+		optionRoutes.GET("/", handlers.GetOptions)
+		optionRoutes.GET("/:id", handlers.GetOptionsByQuestionId)
+		optionRoutes.PATCH("/:id", middlewares.RoleAuth("ADMIN"), handlers.UpdateOptionById)
+		optionRoutes.DELETE("/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteOptionById)
+	}
 
 }

@@ -80,6 +80,22 @@ func Auth() gin.HandlerFunc {
 	}
 }
 
+func RoleAuth(role string) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		user, exists := context.Get("user")
+		if !exists {
+			context.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		userClaim := user.(*dtos.UserClaim)
+		if userClaim.Role != role {
+			context.AbortWithStatus(http.StatusForbidden)
+			return
+		}
+		context.Next()
+	}
+}
+
 // generate user token
 func GenerateToken(user dtos.UserClaim) (string, error) {
 	if err != nil {

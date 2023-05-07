@@ -52,6 +52,53 @@ func GetCategories(context *gin.Context) {
 	context.AbortWithStatusJSON(http.StatusOK, responseDto)
 }
 
+func UpdateCategoryById(context *gin.Context)  {
+	var updateCategoryDto dtos.UpdateCategoryDto
+	if err := context.ShouldBindJSON(&updateCategoryDto); err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var category models.Category
+	if err := db.First(&category, context.Params.ByName("id")).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if updateCategoryDto.Name != "" {
+		category.Name = updateCategoryDto.Name
+	}
+
+	if err := db.Save(&category).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	context.AbortWithStatusJSON(http.StatusOK, gin.H{
+		"message": "successfully updated",
+		"data": category,
+		})
+}
+
+func DeleteCategoryById(context *gin.Context)  {
+	
+	var category models.Category
+	if err := db.First(&category, context.Params.ByName("id")).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := db.Delete(&category).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	context.AbortWithStatusJSON(http.StatusOK, gin.H{
+		"message": "successfully deleted",
+		"data": category,
+		})
+}
+
 // question handlers
 func CreateQuestion(context *gin.Context) {
 
@@ -124,6 +171,56 @@ func GetQuestionsByCategoryId(context *gin.Context) {
 		responseDto = append(responseDto, questionResponseDto)
 	}
 	context.AbortWithStatusJSON(http.StatusOK, responseDto)
+}
+
+func UpdateQuestionById(context *gin.Context)  {
+	var updateQuestionDto dtos.UpdateQuestionDto
+	if err := context.ShouldBindJSON(&updateQuestionDto); err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var question models.Question
+	if err := db.First(&question, context.Params.ByName("id")).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if updateQuestionDto.Text != "" {
+		question.Text = updateQuestionDto.Text
+	}
+	if updateQuestionDto.CategoryID != "" {
+		question.CategoryID = uuid.MustParse(updateQuestionDto.CategoryID)
+	}
+
+	if err := db.Save(&question).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	context.AbortWithStatusJSON(http.StatusOK, gin.H{
+		"message": "successfully updated",
+		"data": question,
+		})
+}
+
+func DeleteQuestionById(context *gin.Context)  {
+	
+	var question models.Question
+	if err := db.First(&question, context.Params.ByName("id")).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := db.Delete(&question).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	context.AbortWithStatusJSON(http.StatusOK, gin.H{
+		"message": "successfully deleted",
+		"data": question,
+		})
 }
 
 // option handlers
@@ -227,4 +324,57 @@ func GetOptionsByQuestionId(context *gin.Context) {
 		responseDto = append(responseDto, optionResponseDto)
 	}
 	context.AbortWithStatusJSON(http.StatusOK, responseDto)
+}
+
+func UpdateOptionById(context *gin.Context)  {
+	var updateOptionDto dtos.UpdateOptionDto
+	if err := context.ShouldBindJSON(&updateOptionDto); err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var option models.Option
+	if err := db.First(&option, context.Params.ByName("id")).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if updateOptionDto.Text != "" {
+		option.Text = updateOptionDto.Text
+	}
+	if updateOptionDto.QuestionID != "" {
+		option.QuestionID = uuid.MustParse(updateOptionDto.QuestionID)
+	}
+	if updateOptionDto.IsCorrect != option.IsCorrect {
+		option.IsCorrect = updateOptionDto.IsCorrect
+	}
+
+	if err := db.Save(&option).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	context.AbortWithStatusJSON(http.StatusOK, gin.H{
+		"message": "successfully updated",
+		"data": option,
+		})
+}
+
+func DeleteOptionById(context *gin.Context)  {
+	
+	var option models.Option
+	if err := db.First(&option, context.Params.ByName("id")).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := db.Delete(&option).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	context.AbortWithStatusJSON(http.StatusOK, gin.H{
+		"message": "successfully deleted",
+		"data": option,
+		})
 }
