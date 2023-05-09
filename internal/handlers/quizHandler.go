@@ -160,8 +160,8 @@ func GetQuestionsByCategoryId(context *gin.Context) {
 	}
 
 	// Return up to 20 questions
-	if len(questions) > 20 {
-		questions = questions[:20]
+	if len(questions) > 10 {
+		questions = questions[:10]
 	}
 
 	var responseDto []dtos.QuestionResponseDto
