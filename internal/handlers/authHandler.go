@@ -39,6 +39,7 @@ func SignUp(context *gin.Context) {
 		ID:       uuid.New(),
 		Name:     registerDto.FullName,
 		Email:    registerDto.Email,
+		ImageUrl: registerDto.ImageUrl,
 		Password: hashedPassword,
 	}
 
