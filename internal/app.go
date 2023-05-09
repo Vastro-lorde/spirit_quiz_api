@@ -51,6 +51,9 @@ func StartServer() {
 	userRoutes := router.Group("/user")
 	SetupUserRoutes(userRoutes)
 
+	resultRoutes := router.Group("/result")
+	SetupResultRoutes(resultRoutes)
+
 	port := config.PORT
 	if port == "" {
 		port = "8080"

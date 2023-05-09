@@ -73,7 +73,7 @@ func SetupQuizRoutes(router *gin.RouterGroup) {
 		questionRoutes.GET("/", handlers.GetQuestions)
 		questionRoutes.GET("/:id", handlers.GetQuestionsByCategoryId)
 		questionRoutes.PATCH("/:id", middlewares.RoleAuth("ADMIN"), handlers.UpdateQuestionById)
-		questionRoutes.DELETE("/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteQuestionById)
+		questionRoutes.DELETE("/delete/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteQuestionById)
 	}
 
 	optionRoutes := router.Group("/options")

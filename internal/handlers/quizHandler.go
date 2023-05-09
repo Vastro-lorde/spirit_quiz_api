@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"math/rand"
 	"net/http"
 	dtos "spirit_quiz/internal/Dtos"
@@ -184,8 +185,9 @@ func UpdateQuestionById(context *gin.Context) {
 		return
 	}
 
+	id := context.Param("id")
 	var question models.Question
-	if err := db.First(&question, context.Params.ByName("id")).Error; err != nil {
+	if err := db.Where("id = ?", id).Find(&question).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -210,14 +212,17 @@ func UpdateQuestionById(context *gin.Context) {
 
 func DeleteQuestionById(context *gin.Context) {
 
+	id := context.Param("id")
+
 	var question models.Question
-	if err := db.First(&question, context.Params.ByName("id")).Error; err != nil {
+	if err := db.Where("id = ?", id).Find(&question).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
+	fmt.Println(question)
 	if err := db.Delete(&question).Error; err != nil {
-		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

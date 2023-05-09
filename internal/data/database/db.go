@@ -22,12 +22,17 @@ func Connect() (*gorm.DB, error) {
 		return nil, err
 	}
 
+	// err = migrations.DropTables(db)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
 	// err = migrations.CreatTables(db)
 	// if err != nil {
 	// 	return nil, err
 	// }
 
-	// err = migrations.DropTables(db)
+	// err = migrations.DropUserTables(db)
 	// if err != nil {
 	// 	return nil, err
 	// }
