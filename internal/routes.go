@@ -8,6 +8,7 @@ import (
 )
 
 // Auth Routes
+// "/auth"
 func SetupAuthRoutes(router *gin.RouterGroup) {
 	router.POST("/register", handlers.SignUp)
 	router.POST("/verify-email", handlers.VerifyEmail)
@@ -16,6 +17,37 @@ func SetupAuthRoutes(router *gin.RouterGroup) {
 	router.POST("/reset-password", handlers.ResetPassword)
 }
 
+// "/image"
+func SetupImageRoutes(router *gin.RouterGroup) {
+	// Apply the Auth middleware to all routes in the router group
+	router.Use(middlewares.Auth())
+
+	router.POST("/upload", handlers.ImageUpload)
+	router.DELETE("/delete", handlers.ImageDelete)
+}
+
+// "/user"
+func SetupUserRoutes(router *gin.RouterGroup) {
+	// Apply the Auth middleware to all routes in the router group
+	router.Use(middlewares.Auth())
+
+	router.PATCH("/:id", handlers.ImageUpload)
+	router.GET("/:id", handlers.GetUserById)
+	router.GET("/users", handlers.GetUsers)
+	router.DELETE("/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteUserById)
+}
+
+// "/result"
+func SetupResultRoutes(router *gin.RouterGroup) {
+	// Apply the Auth middleware to all routes in the router group
+	router.Use(middlewares.Auth())
+
+	router.POST("/create", handlers.CreateResult)
+	router.GET("/user/:id", handlers.GetResultsByUserid)
+	router.GET("/category/:id", handlers.GetResultsByCategoryId)
+}
+
+// "/quiz"
 func SetupQuizRoutes(router *gin.RouterGroup) {
 	// Apply the Auth middleware to all routes in the router group
 	router.Use(middlewares.Auth())

@@ -11,20 +11,52 @@ import (
 
 func CreateResult(context *gin.Context) {
 
-	var question dtos.CreateQuestionDto
-	if err := context.ShouldBindJSON(&question); err != nil {
+	var createResultDto dtos.CreateResultDto
+	if err := context.ShouldBindJSON(&createResultDto); err != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
 		return
 	}
-
-	var newQuestion = models.Question{
+	
+	var newResult = models.Result{
 		ID:         uuid.New(),
-		Text:       question.Text,
-		CategoryID: uuid.MustParse(question.CategoryID),
+		UserID: uuid.MustParse(createResultDto.CategoryID),
+		CategoryID: uuid.MustParse(createResultDto.CategoryID),
+		Score: createResultDto.Score,
 	}
-	if err := db.Create(&newQuestion).Error; err != nil {
+
+	var user models.User
+	if err := db.First(&user, newResult.UserID).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-	context.JSON(http.StatusCreated, newQuestion)
+
+	newResult.Email = user.Email
+	newResult.Name = user.Name
+
+	if err := db.Create(&newResult).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	context.JSON(http.StatusCreated, newResult)
+}
+
+func GetResultsByUserid(context *gin.Context) {
+	var results []models.Result
+	if err := db.Where("user_id = ?", context.Params.ByName("id")).Find(&results).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	
+	context.AbortWithStatusJSON(http.StatusOK, results)
+}
+
+func GetResultsByCategoryId(context *gin.Context) {
+	var results []models.Result
+	if err := db.Where("category_id = ?", context.Params.ByName("id")).Order("score DESC").Find(&results).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	
+	context.AbortWithStatusJSON(http.StatusOK, results)
 }

@@ -21,8 +21,9 @@ func CreateCategory(context *gin.Context) {
 	}
 
 	var newCategory = models.Category{
-		ID:   uuid.New(),
-		Name: category.Name,
+		ID:       uuid.New(),
+		Name:     category.Name,
+		ImageUrl: category.ImageUrl,
 	}
 	if err := db.Create(&newCategory).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
@@ -52,7 +53,7 @@ func GetCategories(context *gin.Context) {
 	context.AbortWithStatusJSON(http.StatusOK, responseDto)
 }
 
-func UpdateCategoryById(context *gin.Context)  {
+func UpdateCategoryById(context *gin.Context) {
 	var updateCategoryDto dtos.UpdateCategoryDto
 	if err := context.ShouldBindJSON(&updateCategoryDto); err != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
@@ -68,6 +69,9 @@ func UpdateCategoryById(context *gin.Context)  {
 	if updateCategoryDto.Name != "" {
 		category.Name = updateCategoryDto.Name
 	}
+	if updateCategoryDto.ImageUrl != "" {
+		category.ImageUrl = updateCategoryDto.ImageUrl
+	}
 
 	if err := db.Save(&category).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -76,12 +80,12 @@ func UpdateCategoryById(context *gin.Context)  {
 
 	context.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"message": "successfully updated",
-		"data": category,
-		})
+		"data":    category,
+	})
 }
 
-func DeleteCategoryById(context *gin.Context)  {
-	
+func DeleteCategoryById(context *gin.Context) {
+
 	var category models.Category
 	if err := db.First(&category, context.Params.ByName("id")).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
@@ -95,8 +99,8 @@ func DeleteCategoryById(context *gin.Context)  {
 
 	context.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"message": "successfully deleted",
-		"data": category,
-		})
+		"data":    category,
+	})
 }
 
 // question handlers
@@ -173,7 +177,7 @@ func GetQuestionsByCategoryId(context *gin.Context) {
 	context.AbortWithStatusJSON(http.StatusOK, responseDto)
 }
 
-func UpdateQuestionById(context *gin.Context)  {
+func UpdateQuestionById(context *gin.Context) {
 	var updateQuestionDto dtos.UpdateQuestionDto
 	if err := context.ShouldBindJSON(&updateQuestionDto); err != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
@@ -200,12 +204,12 @@ func UpdateQuestionById(context *gin.Context)  {
 
 	context.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"message": "successfully updated",
-		"data": question,
-		})
+		"data":    question,
+	})
 }
 
-func DeleteQuestionById(context *gin.Context)  {
-	
+func DeleteQuestionById(context *gin.Context) {
+
 	var question models.Question
 	if err := db.First(&question, context.Params.ByName("id")).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
@@ -219,8 +223,8 @@ func DeleteQuestionById(context *gin.Context)  {
 
 	context.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"message": "successfully deleted",
-		"data": question,
-		})
+		"data":    question,
+	})
 }
 
 // option handlers
@@ -326,7 +330,7 @@ func GetOptionsByQuestionId(context *gin.Context) {
 	context.AbortWithStatusJSON(http.StatusOK, responseDto)
 }
 
-func UpdateOptionById(context *gin.Context)  {
+func UpdateOptionById(context *gin.Context) {
 	var updateOptionDto dtos.UpdateOptionDto
 	if err := context.ShouldBindJSON(&updateOptionDto); err != nil {
 		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
@@ -356,12 +360,12 @@ func UpdateOptionById(context *gin.Context)  {
 
 	context.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"message": "successfully updated",
-		"data": option,
-		})
+		"data":    option,
+	})
 }
 
-func DeleteOptionById(context *gin.Context)  {
-	
+func DeleteOptionById(context *gin.Context) {
+
 	var option models.Option
 	if err := db.First(&option, context.Params.ByName("id")).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
@@ -375,6 +379,6 @@ func DeleteOptionById(context *gin.Context)  {
 
 	context.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"message": "successfully deleted",
-		"data": option,
-		})
+		"data":    option,
+	})
 }

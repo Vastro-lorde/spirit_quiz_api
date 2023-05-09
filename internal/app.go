@@ -45,6 +45,12 @@ func StartServer() {
 	quizRoutes := router.Group("/quiz")
 	SetupQuizRoutes(quizRoutes)
 
+	imageRoutes := router.Group("/image")
+	SetupImageRoutes(imageRoutes)
+
+	userRoutes := router.Group("/user")
+	SetupUserRoutes(userRoutes)
+
 	port := config.PORT
 	if port == "" {
 		port = "8080"

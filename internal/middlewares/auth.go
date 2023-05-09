@@ -84,12 +84,12 @@ func RoleAuth(role string) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		user, exists := context.Get("user")
 		if !exists {
-			context.AbortWithStatus(http.StatusUnauthorized)
+			context.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization token"})
 			return
 		}
 		userClaim := user.(*dtos.UserClaim)
 		if userClaim.Role != role {
-			context.AbortWithStatus(http.StatusForbidden)
+			context.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Not Authorized"})
 			return
 		}
 		context.Next()

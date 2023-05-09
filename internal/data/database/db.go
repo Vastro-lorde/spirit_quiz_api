@@ -2,6 +2,7 @@ package database
 
 import (
 	"spirit_quiz/config"
+
 	// "spirit_quiz/internal/data/migrations"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -22,6 +23,16 @@ func Connect() (*gorm.DB, error) {
 	}
 
 	// err = migrations.CreatTables(db)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// err = migrations.DropTables(db)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// err = seed.Seeder(db)
 	// if err != nil {
 	// 	return nil, err
 	// }
