@@ -21,7 +21,9 @@ func StartServer() {
 	// Add CORS middleware
 	corConfig := cors.DefaultConfig()
 	corConfig.AllowAllOrigins = true
-
+	corConfig.AllowMethods = []string{"*"}
+	corConfig.AllowCredentials = true
+	corConfig.AllowHeaders = []string{"*"}
 
 	router.Use(cors.New(corConfig))
 
