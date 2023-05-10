@@ -20,6 +20,7 @@ func StartServer() {
 
 	// Add CORS middleware
 	corConfig := cors.DefaultConfig()
+	corConfig.AllowWildcard = true
 	corConfig.AllowAllOrigins = true
 	corConfig.AllowMethods = []string{"*"}
 	corConfig.AllowCredentials = true
