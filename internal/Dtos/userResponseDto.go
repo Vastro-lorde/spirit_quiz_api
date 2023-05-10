@@ -9,7 +9,7 @@ import (
 
 type UserResponseDto struct {
 	ID        uuid.UUID   `json:"id"`
-	FullName  string      `json:"full_name"`
+	Name      string      `json:"full_name"`
 	Email     string      `json:"email"`
 	ImageUrl  string      `json:"image_url"`
 	Role      models.Role `json:"role"`
