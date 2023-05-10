@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"spirit_quiz/config"
 	"spirit_quiz/internal/data/database"
-	"time"
+	"spirit_quiz/internal/services"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,8 +18,18 @@ func StartServer() {
 	}
 	router := gin.Default()
 
-	// // adding cors to the pipeline
-	// router.Use(services.CorsMiddleware())
+	// router.Use(cors.New(cors.Config{
+	// 	AllowWildcard:    true,
+	// 	AllowOrigins:     []string{"http://localhost:3000", "*"},
+	// 	AllowMethods:     []string{"POST", "GET", "PUT", "PATCH", "DELETE"},
+	// 	AllowHeaders:     []string{"*"},
+	// 	ExposeHeaders:    []string{"Content-Length"},
+	// 	AllowCredentials: true,
+	// 	MaxAge:           12 * time.Hour,
+	// }))
+
+	// adding cors to the pipeline
+	router.Use(services.CorsMiddleware())
 
 	//Connect to database
 	db, err := database.Connect()
@@ -58,16 +67,6 @@ func StartServer() {
 
 	resultRoutes := router.Group("/result")
 	SetupResultRoutes(resultRoutes)
-
-	router.Use(cors.New(cors.Config{
-		AllowWildcard:    true,
-		AllowOrigins:     []string{"http://localhost:3000", "*"},
-		AllowMethods:     []string{"POST", "GET", "PUT", "PATCH", "DELETE"},
-		AllowHeaders:     []string{"*"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
 
 	fmt.Println("before routes")
 	port := config.PORT

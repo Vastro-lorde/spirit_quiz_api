@@ -4,10 +4,10 @@ import "github.com/gin-gonic/gin"
 
 func CorsMiddleware() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		context.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		context.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000, https://spirit-quiz.netlify.app ")
+		context.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		context.Writer.Header().Set("Access-Control-Allow-Methods", "POST, HEAD, PATCH, OPTIONS, GET, PUT, DELETE, *")
 		context.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		context.Writer.Header().Set("Access-Control-Allow-Headers", "*")
-		context.Writer.Header().Set("Access-Control-Allow-Methods", "*")
 
 		if context.Request.Method == "OPTIONS" {
 			context.AbortWithStatus(204)
