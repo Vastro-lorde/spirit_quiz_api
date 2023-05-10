@@ -22,9 +22,8 @@ func StartServer() {
 	corConfig := cors.DefaultConfig()
 	corConfig.AllowWildcard = true
 	corConfig.AllowAllOrigins = true
-	corConfig.AllowMethods = []string{"*"}
-	corConfig.AllowCredentials = true
-	corConfig.AllowHeaders = []string{"*"}
+	corConfig.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
+	corConfig.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
 
 	router.Use(cors.New(corConfig))
 
