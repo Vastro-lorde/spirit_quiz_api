@@ -20,7 +20,7 @@ func StartServer() {
 
 	// Add CORS middleware
 	corConfig := cors.DefaultConfig()
-	corConfig.AllowOrigins = []string{"http://localhost:3000/", "https://spirit-quiz.netlify.app/"}
+	corConfig.AllowOrigins = []string{"*"}
 
 	router.Use(cors.New(corConfig))
 
