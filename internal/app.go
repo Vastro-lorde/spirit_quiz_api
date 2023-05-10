@@ -20,6 +20,7 @@ func StartServer() {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
+		AllowWildcard:    true,
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"POST", "GET", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"*"},
@@ -27,6 +28,8 @@ func StartServer() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	fmt.Println(" at cors")
 
 	// // adding cors to the pipeline
 	// router.Use(services.CorsMiddleware())
@@ -68,6 +71,7 @@ func StartServer() {
 	resultRoutes := router.Group("/result")
 	SetupResultRoutes(resultRoutes)
 
+	fmt.Println("before routes")
 	port := config.PORT
 	if port == "" {
 		port = "8080"
