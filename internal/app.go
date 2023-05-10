@@ -29,8 +29,6 @@ func StartServer() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	fmt.Println(" at cors")
-
 	// // adding cors to the pipeline
 	// router.Use(services.CorsMiddleware())
 
