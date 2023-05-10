@@ -7,6 +7,7 @@ import (
 	"spirit_quiz/config"
 	"spirit_quiz/internal/data/database"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +17,9 @@ func StartServer() {
 		fmt.Println(err)
 	}
 	router := gin.Default()
+
+	// Add CORS middleware
+	router.Use(cors.Default())
 
 	//Connect to database
 	db, err := database.Connect()
