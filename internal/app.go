@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"spirit_quiz/config"
 	"spirit_quiz/internal/data/database"
+	"spirit_quiz/internal/services"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,14 +18,8 @@ func StartServer() {
 	}
 	router := gin.Default()
 
-	// Add CORS middleware
-	corConfig := cors.DefaultConfig()
-	corConfig.AllowWildcard = true
-	corConfig.AllowAllOrigins = true
-	corConfig.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
-	corConfig.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
-
-	router.Use(cors.New(corConfig))
+	// adding cors to the pipeline
+	router.Use(services.CorsMiddleware())
 
 	//Connect to database
 	db, err := database.Connect()
