@@ -3,9 +3,7 @@ package internal
 import (
 	"spirit_quiz/internal/handlers"
 	"spirit_quiz/internal/middlewares"
-	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -51,16 +49,6 @@ func SetupResultRoutes(router *gin.RouterGroup) {
 
 // "/quiz"
 func SetupQuizRoutes(router *gin.RouterGroup) {
-
-	router.Use(cors.New(cors.Config{
-		AllowWildcard:    true,
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"POST", "GET", "PUT", "PATCH", "DELETE"},
-		AllowHeaders:     []string{"*"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
 
 	// Apply the Auth middleware to all routes in the router group
 	router.Use(middlewares.Auth())
