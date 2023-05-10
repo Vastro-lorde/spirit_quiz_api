@@ -38,7 +38,7 @@ func SignUp(context *gin.Context) {
 	var newUser = models.User{
 		ID:       uuid.New(),
 		Name:     registerDto.FullName,
-		Email:    registerDto.Email,
+		Email:    strings.ToLower(registerDto.Email),
 		ImageUrl: registerDto.ImageUrl,
 		Password: hashedPassword,
 	}
@@ -79,7 +79,7 @@ func Login(context *gin.Context) {
 	}
 	var user models.User
 
-	if err := db.Where("email = ?", loginDto.Email).First(&user).Error; err != nil {
+	if err := db.Where("email = ?",strings.ToLower(loginDto.Email)).First(&user).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
