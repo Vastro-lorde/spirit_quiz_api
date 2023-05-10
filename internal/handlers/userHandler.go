@@ -46,7 +46,6 @@ func UpdateUser(context *gin.Context) {
 		"message": "successfully updated",
 		"data":    userResponseDto,
 	})
-
 }
 
 func GetUserById(context *gin.Context) {

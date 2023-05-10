@@ -3,10 +3,12 @@ package dtos
 import (
 	"spirit_quiz/internal/data/models"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type UserResponseDto struct {
-	ID        string      `json:"id"`
+	ID        uuid.UUID   `json:"id"`
 	FullName  string      `json:"full_name"`
 	Email     string      `json:"email"`
 	ImageUrl  string      `json:"image_url"`

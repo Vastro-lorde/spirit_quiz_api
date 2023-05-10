@@ -54,35 +54,35 @@ func SetupQuizRoutes(router *gin.RouterGroup) {
 	router.Use(middlewares.Auth())
 
 	//create routes
-	creationRoutes := router.Group("/create")
+	creationRoutes := router.Group("create")
 	{
 		creationRoutes.Use(middlewares.RoleAuth("ADMIN"))
-		creationRoutes.POST("/category", handlers.CreateCategory)
-		creationRoutes.POST("/question", handlers.CreateQuestion)
-		creationRoutes.POST("/option", handlers.CreateOption)
+		creationRoutes.POST("category", handlers.CreateCategory)
+		creationRoutes.POST("question", handlers.CreateQuestion)
+		creationRoutes.POST("option", handlers.CreateOption)
 	}
 
-	categoryRoutes := router.Group("/categories")
+	categoryRoutes := router.Group("categories")
 	{
-		categoryRoutes.GET("/", handlers.GetCategories)
-		categoryRoutes.PATCH("/:id", middlewares.RoleAuth("ADMIN"), handlers.UpdateCategoryById)
-		categoryRoutes.DELETE("/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteCategoryById)
+		categoryRoutes.GET("", handlers.GetCategories)
+		categoryRoutes.PATCH(":id", middlewares.RoleAuth("ADMIN"), handlers.UpdateCategoryById)
+		categoryRoutes.DELETE(":id", middlewares.RoleAuth("ADMIN"), handlers.DeleteCategoryById)
 	}
 
-	questionRoutes := router.Group("/questions")
+	questionRoutes := router.Group("questions")
 	{
-		questionRoutes.GET("/", handlers.GetQuestions)
-		questionRoutes.GET("/:id", handlers.GetQuestionsByCategoryId)
-		questionRoutes.PATCH("/:id", middlewares.RoleAuth("ADMIN"), handlers.UpdateQuestionById)
-		questionRoutes.DELETE("/delete/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteQuestionById)
+		questionRoutes.GET("", handlers.GetQuestions)
+		questionRoutes.GET(":id", handlers.GetQuestionsByCategoryId)
+		questionRoutes.PATCH(":id", middlewares.RoleAuth("ADMIN"), handlers.UpdateQuestionById)
+		questionRoutes.DELETE("delete/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteQuestionById)
 	}
 
-	optionRoutes := router.Group("/options")
+	optionRoutes := router.Group("options")
 	{
-		optionRoutes.GET("/", handlers.GetOptions)
-		optionRoutes.GET("/:id", handlers.GetOptionsByQuestionId)
-		optionRoutes.PATCH("/:id", middlewares.RoleAuth("ADMIN"), handlers.UpdateOptionById)
-		optionRoutes.DELETE("/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteOptionById)
+		optionRoutes.GET("", handlers.GetOptions)
+		optionRoutes.GET(":id", handlers.GetOptionsByQuestionId)
+		optionRoutes.PATCH(":id", middlewares.RoleAuth("ADMIN"), handlers.UpdateOptionById)
+		optionRoutes.DELETE(":id", middlewares.RoleAuth("ADMIN"), handlers.DeleteOptionById)
 	}
 
 }
