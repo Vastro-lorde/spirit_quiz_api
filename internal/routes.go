@@ -31,10 +31,10 @@ func SetupUserRoutes(router *gin.RouterGroup) {
 	// Apply the Auth middleware to all routes in the router group
 	router.Use(middlewares.Auth())
 
-	router.PATCH("/:id", handlers.ImageUpload)
-	router.GET("/:id", handlers.GetUserById)
-	router.GET("/users", handlers.GetUsers)
-	router.DELETE("/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteUserById)
+	router.PATCH(":id", handlers.ImageUpload)
+	router.GET(":id", handlers.GetUserById)
+	router.GET("users", handlers.GetUsers)
+	router.DELETE(":id", middlewares.RoleAuth("ADMIN"), handlers.DeleteUserById)
 }
 
 // "/result"

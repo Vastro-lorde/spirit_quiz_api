@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/mitchellh/mapstructure"
 )
 
 // Sign up handler
@@ -79,7 +80,7 @@ func Login(context *gin.Context) {
 	}
 	var user models.User
 
-	if err := db.Where("email = ?",strings.ToLower(loginDto.Email)).First(&user).Error; err != nil {
+	if err := db.Where("email = ?", strings.ToLower(loginDto.Email)).First(&user).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -105,10 +106,19 @@ func Login(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	var userResponseDto dtos.UserResponseDto
+		err = mapstructure.Decode(user, &userResponseDto)
+		if err != nil {
+			context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+
 	context.AbortWithStatusJSON(http.StatusOK, gin.H{
-		"token": token,
-		"exp":   time.Now().Add(time.Hour * 24 * 6).Unix(),
-		"user":  userClaim,
+		"token":     token,
+		"exp":       time.Now().Add(time.Hour * 24 * 6).Unix(),
+		"userClaim": userClaim,
+		"user":      userResponseDto,
 	})
 }
 
