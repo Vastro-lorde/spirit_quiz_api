@@ -17,6 +17,7 @@ func StartServer() {
 		fmt.Println(err)
 	}
 	router := gin.Default()
+	router.Use(services.CorsMiddleware()) // adding cors to the pipeline
 
 	// router.Use(cors.New(cors.Config{
 	// 	AllowWildcard:    true,
@@ -27,9 +28,6 @@ func StartServer() {
 	// 	AllowCredentials: true,
 	// 	MaxAge:           12 * time.Hour,
 	// }))
-
-	// adding cors to the pipeline
-	router.Use(services.CorsMiddleware())
 
 	//Connect to database
 	db, err := database.Connect()
