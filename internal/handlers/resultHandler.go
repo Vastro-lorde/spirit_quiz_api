@@ -16,12 +16,12 @@ func CreateResult(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	
+
 	var newResult = models.Result{
 		ID:         uuid.New(),
-		UserID: uuid.MustParse(createResultDto.CategoryID),
+		UserID:     uuid.MustParse(createResultDto.UserID),
 		CategoryID: uuid.MustParse(createResultDto.CategoryID),
-		Score: createResultDto.Score,
+		Score:      createResultDto.Score,
 	}
 
 	var user models.User
@@ -47,7 +47,6 @@ func GetResultsByUserid(context *gin.Context) {
 		return
 	}
 
-	
 	context.AbortWithStatusJSON(http.StatusOK, results)
 }
 
@@ -57,6 +56,6 @@ func GetResultsByCategoryId(context *gin.Context) {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-	
+
 	context.AbortWithStatusJSON(http.StatusOK, results)
 }
