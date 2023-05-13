@@ -6,6 +6,7 @@ import (
 	"spirit_quiz/internal/data/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -18,7 +19,7 @@ func UpdateUser(context *gin.Context) {
 	}
 
 	var user models.User
-	if err := db.First(&user, context.Params.ByName("id")).Error; err != nil {
+	if err := db.First(&user, context.Params.ByName(updateUser.Id)).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -50,17 +51,25 @@ func UpdateUser(context *gin.Context) {
 
 func GetUserById(context *gin.Context) {
 	var user models.User
-	if err := db.First(&user, context.Params.ByName("id")).Error; err != nil {
+	var getUser struct {
+		ID uuid.UUID `json:"id"`
+	}
+	if err := context.ShouldBindJSON(&getUser); err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := db.First(&user, getUser.ID).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	var userResponseDto dtos.UserResponseDto
-		err := mapstructure.Decode(user, &userResponseDto)
-		if err != nil {
-			context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
-			return
-		}
+	err := mapstructure.Decode(user, &userResponseDto)
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	context.AbortWithStatusJSON(http.StatusOK, userResponseDto)
 }
@@ -90,7 +99,15 @@ func GetUsers(context *gin.Context) {
 func DeleteUserById(context *gin.Context) {
 
 	var user models.User
-	if err := db.First(&user, context.Params.ByName("id")).Error; err != nil {
+	var getUser struct {
+		ID uuid.UUID `json:"id"`
+	}
+	if err := context.ShouldBindJSON(&getUser); err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := db.First(&user, getUser.ID).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
