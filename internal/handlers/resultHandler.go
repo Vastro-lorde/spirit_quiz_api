@@ -50,7 +50,7 @@ func CreateResult(context *gin.Context) {
 
 func GetResultsByUserid(context *gin.Context) {
 	var results []models.Result
-	if err := db.Where("user_id = ?", context.Params.ByName("id")).Find(&results).Error; err != nil {
+	if err := db.Where("user_id = ?", context.Params.ByName("id")).Order("created_at DESC").Find(&results).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
