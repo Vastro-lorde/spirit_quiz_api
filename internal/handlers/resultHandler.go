@@ -22,6 +22,7 @@ func CreateResult(context *gin.Context) {
 		UserID:     uuid.MustParse(createResultDto.UserID),
 		CategoryID: uuid.MustParse(createResultDto.CategoryID),
 		Score:      createResultDto.Score,
+		Duration:   createResultDto.Duration,
 	}
 
 	var user models.User
@@ -30,8 +31,15 @@ func CreateResult(context *gin.Context) {
 		return
 	}
 
+	var category models.Category
+	if err := db.First(&category, newResult.CategoryID).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	newResult.Email = user.Email
 	newResult.Name = user.Name
+	newResult.CategoryName = category.Name
 
 	if err := db.Create(&newResult).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
