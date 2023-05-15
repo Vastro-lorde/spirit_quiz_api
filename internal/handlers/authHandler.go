@@ -44,6 +44,10 @@ func SignUp(context *gin.Context) {
 		Password: hashedPassword,
 	}
 
+	if context.Params.ByName("google") == "true" {
+		newUser.Verified = true
+	}
+
 	if strings.ToLower(registerDto.Email) == "omatsolaseund@gmail.com" {
 		newUser.Role = "ADMIN"
 	}
