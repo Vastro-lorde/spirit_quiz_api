@@ -38,14 +38,18 @@ func SendWelcomeEmail(recipientEmail string, token string) error {
 
 func SendPasswordResetEmail(recipientEmail string, token string) error {
 	// message body
+	resetURL := "https://spirit-quiz.netlify.app/reset-password?email=" + recipientEmail + "&token=" + token
 	message := `
-		<html>
-			<body>
-				<h1>Password reset requested for ` + appName + `</h1>
-				<p>Please use this token to reset your password:</p>
-				<p><strong>` + token + `</strong></p>
-			</body>
-		</html>
+	<html>
+		<body>
+			<h1>Password reset requested for ` + appName + `</h1>
+			<p>Please click the link below to reset your password:</p>
+			<p><a href="` + resetURL + `" style="background-color: blue; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;" target="_blank">Reset Password</a></p>
+			<p>or you can copy this link and paste in a browser</p>
+			<p><strong>` + resetURL + `</strong></p>
+			<p>If you did not request a password reset, please ignore this message.</p>
+		</body>
+	</html>
 	`
 
 	// Create message with sender, recipient, subject, and body

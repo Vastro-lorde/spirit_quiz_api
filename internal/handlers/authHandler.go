@@ -108,11 +108,11 @@ func Login(context *gin.Context) {
 	}
 
 	var userResponseDto dtos.UserResponseDto
-		err = mapstructure.Decode(user, &userResponseDto)
-		if err != nil {
-			context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
-			return
-		}
+	err = mapstructure.Decode(user, &userResponseDto)
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	context.AbortWithStatusJSON(http.StatusOK, gin.H{
 		"token":     token,
@@ -175,7 +175,7 @@ func ResetPassword(context *gin.Context) {
 
 	var user models.User
 	if err := db.Where("email = ?", resetPasswordDto.Email).First(&user).Error; err != nil {
-		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -202,7 +202,7 @@ func ResetPassword(context *gin.Context) {
 	user.Password = hashedPassword
 
 	if err := db.Save(&user).Error; err != nil {
-		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err})
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
