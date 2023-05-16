@@ -85,11 +85,13 @@ func GetUsers(context *gin.Context) {
 
 	for _, user := range users {
 		var userResponseDto dtos.UserResponseDto
-		err := mapstructure.Decode(user, &userResponseDto)
+		err := mapstructure.Decode(&user, &userResponseDto)
 		if err != nil {
 			context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 			return
 		}
+		userResponseDto.CreatedAt = user.CreatedAt
+		userResponseDto.UpdatedAt = user.UpdatedAt
 		responseDto = append(responseDto, userResponseDto)
 	}
 

@@ -44,10 +44,6 @@ func SignUp(context *gin.Context) {
 		Password: hashedPassword,
 	}
 
-	if context.Params.ByName("google") == "true" {
-		newUser.Verified = true
-	}
-
 	if strings.ToLower(registerDto.Email) == "omatsolaseund@gmail.com" {
 		newUser.Role = "ADMIN"
 	}
@@ -55,13 +51,19 @@ func SignUp(context *gin.Context) {
 	alphaNumericToken := services.GenerateRandomAlphaNumericString(6)
 	hashedOtp, err := services.HashPassword(alphaNumericToken)
 
-	if err := services.SendWelcomeEmail(newUser.Email, alphaNumericToken); err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		context.Abort()
-		return
+	if context.Query("google") != "true" || context.Query("google") == "" {
+
+		if err := services.SendWelcomeEmail(newUser.Email, alphaNumericToken); err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			context.Abort()
+			return
+		}
+		newUser.Otp = hashedOtp
 	}
 
-	newUser.Otp = hashedOtp
+	if context.Query("google") == "true" {
+		newUser.Verified = true
+	}
 
 	if err := db.Create(&newUser).Error; err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
