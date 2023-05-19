@@ -6,6 +6,7 @@ import (
 	"net/http"
 	dtos "spirit_quiz/internal/Dtos"
 	"spirit_quiz/internal/data/models"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -128,6 +129,63 @@ func CreateQuestion(context *gin.Context) {
 func GetQuestions(context *gin.Context) {
 	var questions []models.Question
 	if err := db.Find(&questions).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	var responseDto []dtos.QuestionResponseDto
+
+	for _, question := range questions {
+		var questionResponseDto dtos.QuestionResponseDto
+		err := mapstructure.Decode(question, &questionResponseDto)
+		if err != nil {
+			context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		responseDto = append(responseDto, questionResponseDto)
+	}
+	context.AbortWithStatusJSON(http.StatusOK, responseDto)
+}
+
+func GetAllQuestionsByCategoryId(context *gin.Context) {
+	var questions []models.Question
+	if err := db.Where("category_id = ?", context.Params.ByName("id")).Find(&questions).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	var responseDto []dtos.QuestionResponseDto
+
+	for _, question := range questions {
+		var questionResponseDto dtos.QuestionResponseDto
+		err := mapstructure.Decode(question, &questionResponseDto)
+		if err != nil {
+			context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		responseDto = append(responseDto, questionResponseDto)
+	}
+	context.AbortWithStatusJSON(http.StatusOK, responseDto)
+}
+
+func SearchQuestions(context *gin.Context) {
+	// Get the search query parameter
+	query := context.Query("q")
+
+	// Split the query into individual terms
+	queryTerms := strings.Fields(query)
+
+	// Creating the WHERE clause with multiple LIKE conditions
+	conditions := make([]string, len(queryTerms))
+	values := make([]interface{}, len(queryTerms))
+	for i, term := range queryTerms {
+		conditions[i] = "LOWER(text) LIKE ?"
+		values[i] = "%" + strings.ToLower(term) + "%"
+	}
+	whereClause := strings.Join(conditions, " AND ")
+
+	var questions []models.Question
+	if err := db.Where(whereClause, values...).Find(&questions).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -290,6 +348,42 @@ func CreateOption(context *gin.Context) {
 func GetOptions(context *gin.Context) {
 	var options []models.Option
 	if err := db.Find(&options).Error; err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	var responseDto []dtos.OptionResponseDto
+
+	for _, option := range options {
+		var optionResponseDto dtos.OptionResponseDto
+		err := mapstructure.Decode(option, &optionResponseDto)
+		if err != nil {
+			context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
+			return
+		}
+		responseDto = append(responseDto, optionResponseDto)
+	}
+	context.AbortWithStatusJSON(http.StatusOK, responseDto)
+}
+
+func SearchOptions(context *gin.Context) {
+	// Get the search query parameter
+	query := context.Query("q")
+
+	// Split the query into individual terms
+	queryTerms := strings.Fields(query)
+
+	// Creating the WHERE clause with multiple LIKE conditions
+	conditions := make([]string, len(queryTerms))
+	values := make([]interface{}, len(queryTerms))
+	for i, term := range queryTerms {
+		conditions[i] = "LOWER(text) LIKE ?"
+		values[i] = "%" + strings.ToLower(term) + "%"
+	}
+	whereClause := strings.Join(conditions, " AND ")
+
+	var options []models.Option
+	if err := db.Where(whereClause, values...).Find(&options).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}

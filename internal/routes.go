@@ -72,7 +72,10 @@ func SetupQuizRoutes(router *gin.RouterGroup) {
 	questionRoutes := router.Group("questions")
 	{
 		questionRoutes.GET("", handlers.GetQuestions)
+		questionRoutes.GET("search", handlers.SearchQuestions)
 		questionRoutes.GET(":id", handlers.GetQuestionsByCategoryId)
+		questionRoutes.GET("all", handlers.GetQuestions)
+		questionRoutes.GET("all/:id", handlers.GetAllQuestionsByCategoryId)
 		questionRoutes.PATCH(":id", middlewares.RoleAuth("ADMIN"), handlers.UpdateQuestionById)
 		questionRoutes.DELETE("delete/:id", middlewares.RoleAuth("ADMIN"), handlers.DeleteQuestionById)
 	}
@@ -80,6 +83,7 @@ func SetupQuizRoutes(router *gin.RouterGroup) {
 	optionRoutes := router.Group("options")
 	{
 		optionRoutes.GET("", handlers.GetOptions)
+		optionRoutes.GET("search", handlers.SearchOptions)
 		optionRoutes.GET(":id", handlers.GetOptionsByQuestionId)
 		optionRoutes.PATCH(":id", middlewares.RoleAuth("ADMIN"), handlers.UpdateOptionById)
 		optionRoutes.DELETE(":id", middlewares.RoleAuth("ADMIN"), handlers.DeleteOptionById)
