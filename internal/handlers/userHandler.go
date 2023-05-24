@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	dtos "spirit_quiz/internal/Dtos"
 	"spirit_quiz/internal/data/models"
@@ -19,10 +20,12 @@ func UpdateUser(context *gin.Context) {
 	}
 
 	var user models.User
-	if err := db.First(&user, context.Params.ByName(updateUser.Id)).Error; err != nil {
+	if err := db.Where("id = ?", updateUser.Id).Find(&user).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	fmt.Println(user)
 
 	if updateUser.Name != "" {
 		user.Name = updateUser.Name
@@ -51,15 +54,15 @@ func UpdateUser(context *gin.Context) {
 
 func GetUserById(context *gin.Context) {
 	var user models.User
-	var getUser struct {
-		ID uuid.UUID `json:"id"`
-	}
-	if err := context.ShouldBindJSON(&getUser); err != nil {
-		context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
-		return
-	}
+	// var getUser struct {
+	// 	ID uuid.UUID `json:"id"`
+	// }
+	// if err := context.ShouldBindJSON(&getUser); err != nil {
+	// 	context.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
+	// 	return
+	// }
 
-	if err := db.First(&user, getUser.ID).Error; err != nil {
+	if err := db.Where("id = ?", context.Params.ByName("id")).First(&user).Error; err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, err.Error())
 		return
 	}

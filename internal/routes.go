@@ -32,7 +32,7 @@ func SetupUserRoutes(router *gin.RouterGroup) {
 	router.Use(middlewares.Auth())
 
 	router.PATCH("update", handlers.UpdateUser)
-	router.GET("get", handlers.GetUserById)
+	router.GET("get/:id", handlers.GetUserById)
 	router.GET("users", handlers.GetUsers)
 	router.DELETE("delete", middlewares.RoleAuth("ADMIN"), handlers.DeleteUserById)
 }
